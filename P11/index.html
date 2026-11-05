@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 11 Data Detective</title><style>
+:root{
+  --navy:#102E53; --navy2:#17365D; --orange:#F47D26; --blue:#456A9B;
+  --green:#2F7D57; --teal:#1A9BA2; --light:#F4F7FA; --lightblue:#E9F1F8;
+  --paleorange:#FFF0E5; --palegreen:#EAF5EF; --gray:#6B7280; --dark:#263238;
+  --red:#9D3F3C; --palered:#FDECEC; --line:#CBD5E1; --white:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#eef3f8;color:var(--dark)}
+header{background:var(--navy);color:#fff;padding:18px 24px;position:sticky;top:0;z-index:20}
+.header-inner{max-width:1180px;margin:auto;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1d6bd1,#2ad2c9);display:grid;place-items:center;font-weight:800;font-size:24px}
+.brand h1{font-size:20px;margin:0}.brand p{margin:2px 0 0;color:#cbd5e1;font-size:13px}
+.progress-wrap{min-width:240px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.progress{height:9px;background:#233b5e;border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#f4b942,#38c3b2);transition:.25s}
+nav{background:#1d2c42;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.nav-inner{max-width:1180px;margin:auto;display:flex;gap:8px;padding:10px 18px;overflow:auto}
+.nav-inner button{border:0;background:transparent;color:#dbe7f4;padding:10px 14px;border-radius:8px;white-space:nowrap;font-weight:600;cursor:pointer}
+.nav-inner button.active{background:#fff;color:var(--navy)}
+main{max-width:1180px;margin:24px auto;padding:0 18px 60px}
+.panel{background:#fff;border:1px solid #dbe5ef;border-radius:16px;padding:22px;box-shadow:0 7px 24px rgba(16,46,83,.06);margin-bottom:18px}
+h2{margin:0 0 8px;color:var(--navy);font-size:24px}
+h3{color:var(--navy);margin:0 0 10px}
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:800}
+.muted{color:var(--gray)}
+.case-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.case-tabs button{border:1px solid var(--line);background:#fff;color:var(--navy);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+.case-tabs button.active{background:var(--navy);color:white;border-color:var(--navy)}
+.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800}
+.badge.easy{background:#e7f7ee;color:#236743}.badge.medium{background:#fff4da;color:#8a5b00}.badge.hard{background:#fdecec;color:#8a2b2b}
+.prompt{background:#fffaf0;border:1px solid #f2cf73;border-radius:12px;padding:16px;margin:14px 0}
+.exercise{border-top:1px solid #e5edf4;padding-top:18px;margin-top:18px}
+.options{display:grid;gap:10px}
+.option{border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px;cursor:pointer;text-align:left}
+.option:hover{border-color:#9fb4cb}.option.selected{border-color:var(--teal);background:#effcfb}
+.option.correct{border-color:var(--green);background:var(--palegreen)}.option.wrong{border-color:var(--red);background:var(--palered)}
+textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:16px;min-height:48px}
+textarea{min-height:110px;resize:vertical}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button.primary,button.secondary,button.ghost{padding:11px 15px;border-radius:10px;font-weight:800;cursor:pointer}
+button.primary{border:0;background:var(--teal);color:#fff}
+button.secondary{border:0;background:var(--navy);color:#fff}
+button.ghost{border:1px solid var(--line);background:#fff;color:var(--navy)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.feedback{margin-top:14px;padding:14px;border-radius:10px;display:none}
+.feedback.show{display:block}.feedback.ok{background:var(--palegreen);border:1px solid #9ccfb2}.feedback.warn{background:#fff7df;border:1px solid #e9c76d}.feedback.bad{background:var(--palered);border:1px solid #e2aaaa}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+.callout{background:var(--lightblue);border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px}
+.score-box{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:var(--light);padding:12px;border-radius:10px;margin-top:14px}
+.flow-list{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.flow-step{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-weight:700}
+.arrow{color:var(--gray)}
+.bank{display:grid;gap:10px}
+.bank button{border:1px dashed var(--line);background:#fff;padding:10px;border-radius:10px;cursor:pointer;text-align:left}
+.sequence{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;border:2px dashed #cbd5e1;border-radius:12px;padding:10px;background:#f9fbfd}
+.sequence .chip{background:var(--navy);color:#fff;padding:9px 12px;border-radius:9px;display:flex;gap:8px;align-items:center}
+.sequence .chip button{border:0;background:transparent;color:#fff;cursor:pointer;font-size:16px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}th,td{border:1px solid #d8e2ec;padding:10px;text-align:left;vertical-align:top}th{background:var(--navy);color:#fff}
+.footer-note{margin-top:22px;color:var(--gray);font-size:13px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}.progress-wrap{width:100%}header{position:static}}
+</style></head>
+<body>
+<header><div class="header-inner">
+<div class="brand"><div class="logo">A</div><div><h1>APSIP Learning Lab</h1><p>Pertemuan 11 — Perancangan Data / ERD</p></div></div>
+<div class="progress-wrap"><div class="progress-label"><span>Kemajuan</span><strong id="progressText">0%</strong></div><div class="progress"><div id="progressBar"></div></div></div>
+</div></header>
+<main>
+<section class="panel">
+<div class="kicker">Lab 11 — Data Detective</div>
+<h2>Latihan Perancangan Data & ERD</h2>
+<p class="muted">Selesaikan 5 kasus. Fokus pada entity, attribute, primary key, relationship, dan cardinality.</p>
+<div class="case-tabs" id="caseTabs"></div>
+<div id="caseArea"></div>
+</section>
+<section class="panel">
+<h3>Apply to My Project</h3>
+<p>Gunakan hasil P10 kelompokmu. Tuliskan satu use case dan data yang menurutmu dibutuhkan.</p>
+<div class="grid2"><div><label><strong>Use Case</strong></label><textarea id="myUC" placeholder="Contoh format: Melakukan Reservasi Ruang"></textarea></div>
+<div><label><strong>Candidate Entity</strong></label><textarea id="myEntity" placeholder="Tuliskan entity yang menurutmu diperlukan"></textarea></div></div>
+<div class="btn-row"><button class="primary" id="projectCheck">Cek dengan Pertanyaan Pemandu</button></div>
+<div class="feedback warn" id="projectFb"></div>
+</section>
+</main>
+<script>
+const cases=[{"name": "Reservasi Ruang", "level": "easy", "context": "Mahasiswa dapat melihat ruang, memilih jadwal, lalu melakukan reservasi.", "q1": "Mana yang paling tepat menjadi ENTITY?", "opts1": ["Nama mahasiswa", "Mahasiswa", "Tombol Reservasi", "Status berhasil"], "ans1": 1, "ex1": "Mahasiswa adalah objek yang datanya perlu dibedakan dan disimpan. Nama mahasiswa adalah atribut; tombol dan status berhasil adalah bagian antarmuka/output.", "card_q": "Satu mahasiswa dapat memiliki banyak reservasi. Setiap reservasi hanya dimiliki satu mahasiswa.", "card_opts": ["1:1", "1:M", "M:N"], "card_ans": 1, "pk_q": "Primary key paling masuk akal untuk entity Reservasi adalah…", "pk_opts": ["Nama_Ruang", "Tanggal", "ID_Reservasi", "Status"], "pk_ans": 2}, {"name": "Peminjaman Koleksi", "level": "easy", "context": "Anggota meminjam satu atau lebih eksemplar koleksi, dan sistem mencatat tanggal pinjam serta tanggal jatuh tempo.", "q1": "Mana yang paling tepat menjadi ATTRIBUTE dari entity PEMINJAMAN?", "opts1": ["Anggota", "Tanggal_Jatuh_Tempo", "Eksemplar", "Menu Sirkulasi"], "ans1": 1, "ex1": "Tanggal jatuh tempo menjelaskan satu transaksi peminjaman, sehingga cocok sebagai atribut. Anggota dan Eksemplar lebih tepat sebagai entity.", "card_q": "Satu anggota dapat memiliki banyak transaksi peminjaman sepanjang waktu.", "card_opts": ["1:1", "1:M", "M:N"], "card_ans": 1, "pk_q": "Manakah yang PALING tidak tepat dijadikan primary key transaksi?", "pk_opts": ["ID_Peminjaman", "Nomor_Transaksi", "Nama_Anggota", "Kode_Transaksi"], "pk_ans": 2}, {"name": "OPAC & Lokasi Rak", "level": "medium", "context": "Pengguna mencari judul, melihat status ketersediaan, nomor panggil, dan lokasi rak tiap eksemplar.", "q1": "Pilih calon ENTITY yang paling logis.", "opts1": ["Nomor panggil", "Koleksi", "Lokasi rak", "Warna tombol"], "ans1": 1, "ex1": "Koleksi adalah objek data utama. Nomor panggil/lokasi rak dapat menjadi atribut atau terkait entity eksemplar/lokasi tergantung scope.", "card_q": "Satu judul koleksi dapat memiliki banyak eksemplar fisik.", "card_opts": ["1:1", "1:M", "M:N"], "card_ans": 1, "pk_q": "Jika entity EKSEMPLAR dibuat, identifier paling logis adalah…", "pk_opts": ["Judul", "ID_Eksemplar/Barcode", "Nama_Pengarang", "Nomor_Rak"], "pk_ans": 1}, {"name": "Database Jurnal", "level": "medium", "context": "Pemustaka dapat melihat daftar database jurnal, kategori subjek, dan panduan akses masing-masing database.", "q1": "Manakah yang lebih tepat sebagai ENTITY daripada sekadar atribut?", "opts1": ["Nama database", "Database_Jurnal", "URL akses", "Tahun berlangganan"], "ans1": 1, "ex1": "Database_Jurnal dapat memiliki banyak atribut seperti nama, URL, subjek, status langganan, dan panduan.", "card_q": "Satu database dapat memiliki banyak panduan/step akses jika panduan dipisah per platform/perangkat.", "card_opts": ["1:1", "1:M", "M:N"], "card_ans": 1, "pk_q": "Primary key yang aman untuk DATABASE_JURNAL adalah…", "pk_opts": ["Nama", "ID_Database", "URL", "Kategori"], "pk_ans": 1}, {"name": "Layanan Referensi Daring", "level": "hard", "context": "Pemustaka mengirim permintaan referensi, pustakawan menanggapi, dan satu permintaan dapat menghasilkan beberapa sumber rujukan.", "q1": "Entity transaksi utama yang paling penting adalah…", "opts1": ["Chat", "Permintaan_Referensi", "Pesan sukses", "Tombol kirim"], "ans1": 1, "ex1": "Permintaan_Referensi menyimpan konteks transaksi layanan. Chat bisa menjadi channel atau entity tambahan jika scope memerlukannya.", "card_q": "Satu permintaan referensi dapat menghasilkan banyak sumber rujukan, dan satu sumber rujukan dapat muncul di lebih dari satu permintaan.", "card_opts": ["1:1", "1:M", "M:N"], "card_ans": 2, "pk_q": "Jika relasi M:N Permintaan—Sumber disimpan, biasanya diperlukan…", "pk_opts": ["Entity penghubung", "Tombol tambahan", "Warna status", "Tidak perlu apa-apa"], "pk_ans": 0}];
+let idx=0, done=new Set();
+const tabs=document.getElementById('caseTabs'), area=document.getElementById('caseArea');
+function levelLabel(l){return l==='easy'?'Mudah':l==='medium'?'Sedang':'Menantang'}
+function renderTabs(){tabs.innerHTML='';cases.forEach((c,i)=>{const b=document.createElement('button');b.textContent=`${i+1}. ${c.name}`;if(i===idx)b.classList.add('active');b.addEventListener('click',()=>{idx=i;render();});tabs.appendChild(b)})}
+function render(){
+ const c=cases[idx];
+ area.innerHTML=`<div class="prompt"><span class="badge ${c.level}">${levelLabel(c.level)}</span><p><strong>Kasus:</strong> ${c.context}</p></div>
+ <div class="exercise"><h3>1. Klasifikasi Data</h3><p>${c.q1}</p><div class="options" id="o1">${c.opts1.map((o,i)=>`<button class="option" data-i="${i}">${o}</button>`).join('')}</div><div class="feedback" id="f1"></div></div>
+ <div class="exercise"><h3>2. Cardinality</h3><p>${c.card_q}</p><div class="options" id="o2">${c.card_opts.map((o,i)=>`<button class="option" data-i="${i}">${o}</button>`).join('')}</div><div class="feedback" id="f2"></div></div>
+ <div class="exercise"><h3>3. Primary Key</h3><p>${c.pk_q}</p><div class="options" id="o3">${c.pk_opts.map((o,i)=>`<button class="option" data-i="${i}">${o}</button>`).join('')}</div><div class="feedback" id="f3"></div></div>
+ <div class="score-box"><strong id="score">0/3 benar</strong><span class="muted">Selesaikan ketiga latihan untuk menuntaskan kasus.</span></div>
+ <div class="btn-row"><button class="secondary" id="next" disabled>${idx<cases.length-1?'Kasus Berikutnya':'Selesai Semua Kasus'}</button><button class="ghost" id="reset">Reset Kasus</button></div>`;
+ let score=0, answered=[false,false,false];
+ function bind(id,ans,fbid,ex){document.querySelectorAll(`#${id} .option`).forEach(btn=>btn.addEventListener('click',()=>{if(answered[+id.slice(1)-1])return;answered[+id.slice(1)-1]=true;const i=+btn.dataset.i;btn.classList.add(i===ans?'correct':'wrong');const fb=document.getElementById(fbid);fb.className='feedback show '+(i===ans?'ok':'bad');fb.innerHTML=i===ans?`✅ Tepat. ${ex}`:`❌ Belum tepat. ${ex}`;if(i===ans)score++;document.getElementById('score').textContent=`${score}/3 benar`;if(answered.every(Boolean)){done.add(idx);document.getElementById('next').disabled=false;updateProgress();}}))}
+ bind('o1',c.ans1,'f1',c.ex1);bind('o2',c.card_ans,'f2','Cardinality ditentukan dari jumlah kemungkinan hubungan antar-instance entity.');bind('o3',c.pk_ans,'f3','Primary key harus unik dan stabil untuk membedakan setiap record.');
+ document.getElementById('reset').onclick=render;
+ document.getElementById('next').onclick=()=>{if(idx<cases.length-1){idx++;render();}else{alert('Semua kasus selesai. Lanjutkan ke Apply to My Project.')}};
+ renderTabs();
+}
+function updateProgress(){const p=Math.round(done.size/cases.length*100);document.getElementById('progressBar').style.width=p+'%';document.getElementById('progressText').textContent=p+'%';}
+document.getElementById('projectCheck').onclick=()=>{const u=document.getElementById('myUC').value.trim(),e=document.getElementById('myEntity').value.trim(),fb=document.getElementById('projectFb');fb.classList.add('show');if(!u||!e){fb.textContent='Isi use case dan candidate entity terlebih dahulu.';return}fb.innerHTML=`Gunakan 3 pertanyaan ini sebelum memutuskan:<br>1) Data apa yang harus disimpan agar use case <strong>${u}</strong> berjalan?<br>2) Apakah <strong>${e}</strong> benar-benar objek data, atau hanya atribut/menu/output?<br>3) Requirement ID mana yang menjadi dasar entity tersebut?`;}
+render();updateProgress();
+</script>
+</body></html>
