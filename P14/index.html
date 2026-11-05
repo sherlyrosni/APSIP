@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 14 Usability Detective</title><style>
+:root{
+  --navy:#102E53; --navy2:#17365D; --orange:#F47D26; --blue:#456A9B;
+  --green:#2F7D57; --teal:#1A9BA2; --light:#F4F7FA; --lightblue:#E9F1F8;
+  --paleorange:#FFF0E5; --palegreen:#EAF5EF; --gray:#6B7280; --dark:#263238;
+  --red:#9D3F3C; --palered:#FDECEC; --line:#CBD5E1; --white:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#eef3f8;color:var(--dark)}
+header{background:var(--navy);color:#fff;padding:18px 24px;position:sticky;top:0;z-index:20}
+.header-inner{max-width:1180px;margin:auto;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1d6bd1,#2ad2c9);display:grid;place-items:center;font-weight:800;font-size:24px}
+.brand h1{font-size:20px;margin:0}.brand p{margin:2px 0 0;color:#cbd5e1;font-size:13px}
+.progress-wrap{min-width:240px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.progress{height:9px;background:#233b5e;border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#f4b942,#38c3b2);transition:.25s}
+nav{background:#1d2c42;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.nav-inner{max-width:1180px;margin:auto;display:flex;gap:8px;padding:10px 18px;overflow:auto}
+.nav-inner button{border:0;background:transparent;color:#dbe7f4;padding:10px 14px;border-radius:8px;white-space:nowrap;font-weight:600;cursor:pointer}
+.nav-inner button.active{background:#fff;color:var(--navy)}
+main{max-width:1180px;margin:24px auto;padding:0 18px 60px}
+.panel{background:#fff;border:1px solid #dbe5ef;border-radius:16px;padding:22px;box-shadow:0 7px 24px rgba(16,46,83,.06);margin-bottom:18px}
+h2{margin:0 0 8px;color:var(--navy);font-size:24px}
+h3{color:var(--navy);margin:0 0 10px}
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:800}
+.muted{color:var(--gray)}
+.case-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.case-tabs button{border:1px solid var(--line);background:#fff;color:var(--navy);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+.case-tabs button.active{background:var(--navy);color:white;border-color:var(--navy)}
+.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800}
+.badge.easy{background:#e7f7ee;color:#236743}.badge.medium{background:#fff4da;color:#8a5b00}.badge.hard{background:#fdecec;color:#8a2b2b}
+.prompt{background:#fffaf0;border:1px solid #f2cf73;border-radius:12px;padding:16px;margin:14px 0}
+.exercise{border-top:1px solid #e5edf4;padding-top:18px;margin-top:18px}
+.options{display:grid;gap:10px}
+.option{border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px;cursor:pointer;text-align:left}
+.option:hover{border-color:#9fb4cb}.option.selected{border-color:var(--teal);background:#effcfb}
+.option.correct{border-color:var(--green);background:var(--palegreen)}.option.wrong{border-color:var(--red);background:var(--palered)}
+textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:16px;min-height:48px}
+textarea{min-height:110px;resize:vertical}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button.primary,button.secondary,button.ghost{padding:11px 15px;border-radius:10px;font-weight:800;cursor:pointer}
+button.primary{border:0;background:var(--teal);color:#fff}
+button.secondary{border:0;background:var(--navy);color:#fff}
+button.ghost{border:1px solid var(--line);background:#fff;color:var(--navy)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.feedback{margin-top:14px;padding:14px;border-radius:10px;display:none}
+.feedback.show{display:block}.feedback.ok{background:var(--palegreen);border:1px solid #9ccfb2}.feedback.warn{background:#fff7df;border:1px solid #e9c76d}.feedback.bad{background:var(--palered);border:1px solid #e2aaaa}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+.callout{background:var(--lightblue);border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px}
+.score-box{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:var(--light);padding:12px;border-radius:10px;margin-top:14px}
+.flow-list{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.flow-step{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-weight:700}
+.arrow{color:var(--gray)}
+.bank{display:grid;gap:10px}
+.bank button{border:1px dashed var(--line);background:#fff;padding:10px;border-radius:10px;cursor:pointer;text-align:left}
+.sequence{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;border:2px dashed #cbd5e1;border-radius:12px;padding:10px;background:#f9fbfd}
+.sequence .chip{background:var(--navy);color:#fff;padding:9px 12px;border-radius:9px;display:flex;gap:8px;align-items:center}
+.sequence .chip button{border:0;background:transparent;color:#fff;cursor:pointer;font-size:16px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}th,td{border:1px solid #d8e2ec;padding:10px;text-align:left;vertical-align:top}th{background:var(--navy);color:#fff}
+.footer-note{margin-top:22px;color:var(--gray);font-size:13px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}.progress-wrap{width:100%}header{position:static}}
+</style></head>
+<body>
+<header><div class="header-inner">
+<div class="brand"><div class="logo">A</div><div><h1>APSIP Learning Lab</h1><p>Pertemuan 14 — Usability Evaluation</p></div></div>
+<div class="progress-wrap"><div class="progress-label"><span>Kemajuan</span><strong id="progressText">0%</strong></div><div class="progress"><div id="progressBar"></div></div></div>
+</div></header>
+<main>
+<section class="panel"><div class="kicker">Lab 14 — Usability Detective</div><h2>Latihan Membaca Evidence Usability</h2>
+<p class="muted">Selesaikan 5 kasus. Bedakan observation, issue, severity, dan recommendation.</p>
+<div class="case-tabs" id="caseTabs"></div><div id="caseArea"></div></section>
+<section class="panel"><h3>Apply to My Project</h3>
+<div class="grid2"><div><label><strong>Task Scenario</strong></label><textarea id="task"></textarea></div><div><label><strong>Success Criteria</strong></label><textarea id="criteria"></textarea></div></div>
+<div class="btn-row"><button class="primary" id="proj">Cek Kualitas Skenario</button></div><div class="feedback warn" id="pfb"></div></section>
+</main>
+<script>
+const cases=[{"name": "Salah Menu", "level": "easy", "scenario": "Task: cari panduan akses database jurnal.", "obs": "Partisipan membuka menu Koleksi, kembali ke beranda, lalu membuka Layanan dan baru menemukan panduan.", "issue": "Label/navigasi menuju panduan database kurang mudah dikenali.", "severity": "Medium", "rec": "Perjelas label/menu yang mengarah ke panduan database dan uji kembali."}, {"name": "Tidak Menemukan Tombol", "level": "hard", "scenario": "Task: reservasi ruang untuk besok pukul 13.00.", "obs": "3 dari 4 partisipan tidak menemukan tombol Reservasi pada halaman detail ruang dan gagal menyelesaikan task tanpa bantuan.", "issue": "Action utama Reservasi tidak cukup terlihat/dikenali.", "severity": "High", "rec": "Perkuat visibility dan hierarchy tombol Reservasi sebagai primary action."}, {"name": "Hesitation Panjang", "level": "medium", "scenario": "Task: perpanjang masa pinjam.", "obs": "Partisipan berhasil menyelesaikan task, tetapi berhenti 18 detik di halaman pinjaman karena label 'Renewal' tidak dipahami.", "issue": "Istilah 'Renewal' tidak cukup familiar bagi pengguna.", "severity": "Medium", "rec": "Gunakan label yang lebih familiar, misalnya 'Perpanjang Peminjaman'."}, {"name": "Gangguan Kecil", "level": "easy", "scenario": "Task: lihat status ketersediaan buku.", "obs": "Semua partisipan berhasil. Dua partisipan menyebut ikon status kurang konsisten, tetapi tidak menyebabkan salah klik atau kegagalan.", "issue": "Ikon status kurang konsisten.", "severity": "Low", "rec": "Samakan ikon/label status untuk meningkatkan konsistensi visual."}, {"name": "Error Tanpa Jalan Keluar", "level": "hard", "scenario": "Task: buka jurnal dari database yang dilanggan.", "obs": "Saat akses gagal, sistem hanya menampilkan 'Error 503'. 4 dari 5 partisipan berhenti dan tidak tahu apa yang harus dilakukan.", "issue": "Error message tidak membantu pengguna memahami masalah dan tindakan berikutnya.", "severity": "High", "rec": "Gunakan pesan error yang dapat dipahami dan berikan tindakan alternatif/opsi bantuan."}];let idx=0,done=new Set();
+const tabs=document.getElementById('caseTabs'),area=document.getElementById('caseArea');
+function lab(l){return l==='easy'?'Mudah':l==='medium'?'Sedang':'Menantang'}
+function renderTabs(){tabs.innerHTML='';cases.forEach((c,i)=>{const b=document.createElement('button');b.textContent=`${i+1}. ${c.name}`;if(i===idx)b.classList.add('active');b.onclick=()=>{idx=i;render()};tabs.appendChild(b)})}
+function render(){
+ const c=cases[idx];
+ area.innerHTML=`<div class="prompt"><span class="badge ${c.level}">${lab(c.level)}</span><p><strong>${c.scenario}</strong></p><p><strong>Observation log:</strong> ${c.obs}</p></div>
+ <div class="exercise"><h3>1. Apa usability issue utamanya?</h3><textarea id="issue" placeholder="Tulis issue berdasarkan observation, bukan opini pribadi."></textarea><div class="btn-row"><button class="primary" id="checkIssue">Cek Issue</button></div><div class="feedback" id="f1"></div></div>
+ <div class="exercise"><h3>2. Tentukan Severity</h3><div class="options" id="sev">${['High','Medium','Low'].map(x=>`<button class="option" data-v="${x}">${x}</button>`).join('')}</div><div class="feedback" id="f2"></div></div>
+ <div class="exercise"><h3>3. Buat Recommendation</h3><textarea id="rec" placeholder="Recommendation harus menjawab issue yang ditemukan."></textarea><div class="btn-row"><button class="primary" id="checkRec">Cek Recommendation</button></div><div class="feedback" id="f3"></div></div>
+ <div class="btn-row"><button class="secondary" id="next" disabled>${idx<cases.length-1?'Kasus Berikutnya':'Selesai Semua Kasus'}</button></div>`;
+ let parts=[false,false,false];
+ checkIssue.onclick=()=>{let v=issue.value.trim(),f=f1;f.className='feedback show '+(v.length>18?'ok':'warn');f.innerHTML=v.length>18?`✅ Sudah berbentuk issue yang dapat dianalisis. Bandingkan dengan formulasi kuat: <strong>${c.issue}</strong>`:'Tuliskan masalah usability yang terlihat dari perilaku partisipan, bukan penilaian seperti “desainnya jelek”.';parts[0]=true;finish()};
+ document.querySelectorAll('#sev .option').forEach(b=>b.onclick=()=>{let ok=b.dataset.v===c.severity;b.classList.add(ok?'correct':'wrong');f2.className='feedback show '+(ok?'ok':'bad');f2.textContent=ok?`✅ Tepat. Severity ${c.severity} sesuai dampaknya terhadap penyelesaian task.`:`Belum tepat. Ingat: High menghalangi task, Medium mengganggu signifikan tetapi task masih mungkin selesai, Low gangguan kecil.`;parts[1]=true;finish()});
+ checkRec.onclick=()=>{let v=rec.value.trim(),f=f3;f.className='feedback show '+(v.length>20?'ok':'warn');f.innerHTML=v.length>20?`✅ Recommendation-mu sudah cukup eksplisit. Contoh arah yang kuat: <strong>${c.rec}</strong>`:'Recommendation harus menjawab issue dan dapat diuji kembali.';parts[2]=true;finish()};
+ function finish(){if(parts.every(Boolean)){done.add(idx);next.disabled=false;updateProgress()}}
+ next.onclick=()=>{if(idx<cases.length-1){idx++;render()}else alert('Semua kasus selesai. Lanjutkan ke usability test proyekmu.')};renderTabs()
+}
+function updateProgress(){let p=Math.round(done.size/cases.length*100);progressBar.style.width=p+'%';progressText.textContent=p+'%'}
+proj.onclick=()=>{let t=task.value.trim(),c=criteria.value.trim();pfb.classList.add('show');if(!t||!c){pfb.textContent='Isi task scenario dan success criteria terlebih dahulu.';return}pfb.innerHTML=`Cek kualitas skenario:<br>1) Apakah task menjelaskan <strong>goal</strong>, bukan langkah klik?<br>2) Apakah success criteria dapat diamati?<br>3) Apakah observer bisa menilai selesai/tidak tanpa memberi bantuan?<br>4) Jangan masukkan jawaban seperti “klik menu X” ke dalam skenario.`}
+render();updateProgress();
+</script>
+</body></html>
